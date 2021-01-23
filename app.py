@@ -38,7 +38,11 @@ def searchImages():
     if request.method == 'POST':
         print("entered post")
         keyWord = request.form['keyword'] # assigning the value of the input keyword to the variable keyword
-
+        num = request.form['number_images']
+        if num.isdigit():
+            num=int(num)
+        else:
+            num=5
     else:
         print("did not enter post")
         return
@@ -47,10 +51,10 @@ def searchImages():
     target_folder = join('./static','_'.join(keyWord.lower().split(' ')))
     if isdir(target_folder):
 	    list_of_jpg_files = [join('_'.join(keyWord.lower().split(' ')),f) for f in listdir(target_folder) if isfile(join(target_folder, f)) and '.jpg' in f]
-	    if(len(list_of_jpg_files)>0): # if there are images present, show them on a wen UI
+	    if(len(list_of_jpg_files)>0 and len(list_of_jpg_files)==num): # if there are images present, show them on a wen UI
 		    return render_template('showImage.html',user_images = list_of_jpg_files)
 
-    num_of_images = search_and_download(search_term=keyWord)
+    num_of_images = search_and_download(search_term=keyWord, number_images=num)
     response = "We have downloaded ", num_of_images, "images of " + keyWord + " for you"
     print(response)
 
@@ -61,8 +65,16 @@ def searchImages():
 def get_image_url():
     if request.method == 'POST':
         print("entered post")
+        print(request.form)
         keyWord =  request.form['keyword'] # assigning the value of the input keyword to the variable keyword
-
+        if 'number' in request.form:
+            num = request.form['number']
+            if num.isdigit():
+                num=int(num)
+            else:
+                num=5
+        else:
+            num=5
     else:
         print("Did not enter  post")
     print('printing = ' + keyWord)
@@ -70,8 +82,8 @@ def get_image_url():
     image_name = keyWord.split()
     image_name = '+'.join(image_name)
 
-    service = search_and_fetch(search_term=keyWord)
-    url_list = []
+    service = search_and_fetch(search_term=keyWord, number_images=num)
+    url_list = [{'number_of_images': len(service)}]
     for img_url in service:
         # creating key value pairs of image URLs to be sent as json
         dict={'image_url':img_url}

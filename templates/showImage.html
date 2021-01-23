@@ -7,11 +7,25 @@
 <body>
 <div class="table-users">
    <div class="header">Some of the scrapped images:</div>
+   <h3>Number of scraped images: {{user_images|length}}</h3>
     <table>
-{% for user_image in user_images %}
-        <td width="400">
-            <img width="300" height="300" src="{{ url_for('static', filename=user_image) }}" alt="User Image"></td>
-{% endfor %}
+	{% set max_columns = 5 %}
+	{% set interval = user_images|length / max_columns %}
+	{% set rows = interval|int + 1 %}
+
+	{% for p in range(rows) %}
+	<tr>
+    		{% for n in range(max_columns) %}
+        		{% set cell_pos = (p * max_columns) + n %}
+			{% if cell_pos|int < user_images|length %}
+        		<td width="400">
+            			<img width="300" height="300" src="{{ url_for('static', filename=user_images[cell_pos]) }}" alt="User Image">
+			</td>
+			{% else %}
+			{% endif %}
+    		{% endfor %}
+	</tr>
+        {% endfor %}
     </table>
 </div>
 </body>

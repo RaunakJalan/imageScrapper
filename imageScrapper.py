@@ -29,6 +29,8 @@ def fetch_image_urls(query:str, max_links_to_fetch:int, wd:webdriver, sleep_betw
         number_results = len(thumbnail_results)
         
         print(f"Found: {number_results} search results. Extracting links from {results_start}:{number_results}")
+        if results_start == number_results:
+            return image_urls
         
         for img in thumbnail_results[results_start:number_results]:
             # try to click every thumbnail such that we can get the real image behind it
@@ -51,8 +53,8 @@ def fetch_image_urls(query:str, max_links_to_fetch:int, wd:webdriver, sleep_betw
                 break
         else:
             print("Found:", len(image_urls), "image links, looking for more ...")
-            time.sleep(30)
-            return
+            time.sleep(5)
+            
             load_more_button = wd.find_element_by_css_selector(".mye4qd")
             if load_more_button:
                 wd.execute_script("document.querySelector('.mye4qd').click();")
@@ -90,6 +92,7 @@ def search_and_download(search_term:str, target_path='./static',number_images=5)
     gChromeOptions = webdriver.ChromeOptions()
     gChromeOptions.add_argument("window-size=1920x1480")
     gChromeOptions.add_argument("disable-dev-shm-usage")
+    gChromeOptions.headless=True
     wd = webdriver.Chrome(
     	chrome_options=gChromeOptions, executable_path=ChromeDriverManager().install()
     )
@@ -98,6 +101,5 @@ def search_and_download(search_term:str, target_path='./static',number_images=5)
         
     for elem in res:
         persist_image(target_folder,elem)
-        
-    return number_images
-        
+
+    return len(elem)
