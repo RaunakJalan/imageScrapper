@@ -1,5 +1,5 @@
 from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
+from webdriver_manager.chrome import ChromeDriverManager
 from PIL import Image
 import os
 import time
@@ -64,11 +64,13 @@ def fetch_image_urls(query:str, max_links_to_fetch:int, wd:webdriver, sleep_betw
 
 
 def search_and_fetch(search_term:str, number_images=5):
-    driver_path='./chromedriver'
-    chrome_options = Options()
-    chrome_options.headless = True
-    res = []
-    with webdriver.Chrome(executable_path=driver_path, options=chrome_options) as wd:
-        res = fetch_image_urls(search_term, number_images, wd=wd, sleep_between_interactions=0.5)
+    gChromeOptions = webdriver.ChromeOptions()
+    gChromeOptions.add_argument("window-size=1920x1480")
+    gChromeOptions.add_argument("disable-dev-shm-usage")
+    wd = webdriver.Chrome(
+    	chrome_options=gChromeOptions, executable_path=ChromeDriverManager().install()
+    )
+    res = fetch_image_urls(search_term, number_images, wd=wd, sleep_between_interactions=0.5)
+    wd.close()
     return res
         
