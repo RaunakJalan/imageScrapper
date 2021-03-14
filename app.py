@@ -77,7 +77,7 @@ def get_image_url():
             num=5
     else:
         print("Did not enter  post")
-	return jsonify({"Method": "Get"})
+        return jsonify({"Method": "Get"})
     # splitting and combining the keyword for a string containing multiple words
     image_name = keyWord.split()
     image_name = '+'.join(image_name)
