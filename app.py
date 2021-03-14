@@ -60,7 +60,7 @@ def searchImages():
 
     return show_images(keyWord) # redirect the control to the show images method
 
-@app.route('/api/showImages', methods=['GET','POST']) # route to return the list of file locations for API calls
+@app.route('/api/showImages', methods=['POST']) # route to return the list of file locations for API calls
 @cross_origin()
 def get_image_url():
     if request.method == 'POST':
@@ -77,7 +77,7 @@ def get_image_url():
             num=5
     else:
         print("Did not enter  post")
-    print('printing = ' + keyWord)
+	return jsonify({"Method": "Get"})
     # splitting and combining the keyword for a string containing multiple words
     image_name = keyWord.split()
     image_name = '+'.join(image_name)
